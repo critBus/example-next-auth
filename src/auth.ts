@@ -6,6 +6,7 @@ import { getUserById } from "./data/user";
 import { JWT } from "next-auth/jwt";
 import { UserRole } from "@prisma/client";
 import async from "./middleware";
+import { getTwoFactorConfirmationEmailByUserId } from "./data/two-factor-confirmation";
 
 type ExtendedUser = DefaultSession["user"] & {
   role: UserRole;
@@ -45,6 +46,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user.id) {
         const existingUser = await getUserById(user.id);
         if (existingUser?.emailVerified) {
+          if (existingUser.isTwoFactorEnabled) {
+            const twoFactorConfirmation =
+              await getTwoFactorConfirmationEmailByUserId(existingUser.id);
+            if (!twoFactorConfirmation) {
+              return false;
+            }
+            await prisma.twoFactorConfirmation.delete({
+              where: { id: twoFactorConfirmation.id },
+            });
+            return false;
+          }
           return true;
         }
       }

@@ -27,7 +27,7 @@ const LoguinForm = () => {
     searchParams.get("error") === "OAuthAccountNotLinked"
       ? "Email already in use with different provider!"
       : "";
-
+  const [showTwoFactor, setShowTwoFactor] = useState(false);
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const form = useForm<TypeSchemaForm>({
@@ -40,13 +40,23 @@ const LoguinForm = () => {
   const handlerSubmit = (values: TypeSchemaForm) => {
     setError("");
     setSuccess("");
-    login(values).then((data) => {
-      setError(data.error);
-      setSuccess(data.success);
-    });
-    // startTransition(() => {
-
-    // });
+    login(values)
+      .then((data) => {
+        if (data?.error) {
+          form.reset();
+          setError(data.error);
+        }
+        if (data?.success) {
+          form.reset();
+          setSuccess(data.success);
+        }
+        if (data?.twoFactor) {
+          setShowTwoFactor(true);
+        }
+      })
+      .catch(() => {
+        setError("something went wrong");
+      });
   };
   return (
     <CardWrapper
@@ -58,49 +68,72 @@ const LoguinForm = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handlerSubmit)} className="space-y-6">
           <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="example@exam.com"
-                      type="email"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="*******" type="password" />
-                  </FormControl>
-                  <Button
-                    size="sm"
-                    variant="link"
-                    asChild
-                    className="flex justify-start px-0 font-normal"
-                  >
-                    <Link href="/auth/reset">Forgot password</Link>
-                  </Button>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {showTwoFactor && (
+              <FormField
+                control={form.control}
+                name="code"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Two Factor Code</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="123456" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            {!showTwoFactor && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="example@exam.com"
+                          type="email"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="*******"
+                          type="password"
+                        />
+                      </FormControl>
+                      <Button
+                        size="sm"
+                        variant="link"
+                        asChild
+                        className="flex justify-start px-0 font-normal"
+                      >
+                        <Link href="/auth/reset">Forgot password</Link>
+                      </Button>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
           </div>
           <FormError message={error || urlError} />
           <FormSuccess message={success ?? ""} />
           <Button type="submit" className="w-full">
-            Login
+            {showTwoFactor ? "Confirm" : "Login"}
           </Button>
         </form>
       </Form>
