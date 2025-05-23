@@ -1,37 +1,51 @@
+/* Poppins Regular */
 @font-face {
-  font-family: 'Poppins-Bold';
-  src: url('../../public/fonts/poppins/Poppins-Bold.ttf') format('truetype');
-}
-
-.f-poppins-b {
-  font-family: 'Poppins-Bold' !important;
-}
-
-@font-face {
-  font-family: 'Poppins-Light';
-  src: url('../../public/fonts/poppins/Poppins-Light.ttf') format('truetype');
-}
-
-.f-poppins-l {
-  font-family: 'Poppins-Light' !important;
-}
-
-@font-face {
-  font-family: 'Poppins-Medium';
-  src: url('../../public/fonts/poppins/Poppins-Medium.ttf') format('truetype');
-}
-
-.f-poppins-m {
-  font-family: 'Poppins-Medium' !important;
-}
-
-@font-face {
-  font-family: 'Poppins-Regular';
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
   src: url('../../public/fonts/poppins/Poppins-Regular.ttf') format('truetype');
 }
 
 .f-poppins {
-  font-family: 'Poppins-Regular' !important;
+  font-family: 'Poppins' !important;
+  font-weight: 400;
 }
 
+/* Poppins SemiBold */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../../public/fonts/poppins/Poppins-SemiBold.ttf') format('truetype');
+}
 
+.f-poppins-600-ss {
+  font-family: 'Poppins', sans-serif  !important;
+  font-weight: 600;
+}
+
+.f-poppins-600 {
+  font-family: 'Poppins'  !important;
+  font-weight: 600;
+}
+
+/* Poppins Bold */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../../public/fonts/poppins/Poppins-Bold.ttf') format('truetype');
+}
+
+.f-poppins-700-ss {
+  font-family: 'Poppins', sans-serif  !important;
+  font-weight: 700;
+}
+
+.f-poppins-700 {
+  font-family: 'Poppins', sans-serif  !important;
+  font-weight: 700;
+}

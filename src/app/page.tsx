@@ -4,7 +4,7 @@ import FirstPage from "@/components/FirstPage";
 export default function Home() {
   return <FirstPage />;
   // return (
-  //   <ThemeProvider>
+  //   <ThemeProvider forcedTheme="darck">
   //     <FirstPage />
   //   </ThemeProvider>
   // );

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import "./globals.css";
 import "./customfonts.css";
+import GlobalLayout from "@/components/layout/GlobalLayout";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,9 +14,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  //className="dark"
   return (
     <html lang="en">
-      <body className="light">{children}</body>
+      <body>
+        <GlobalLayout>{children}</GlobalLayout>
+      </body>
     </html>
   );
 }
