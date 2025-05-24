@@ -16,14 +16,22 @@ const NewVerificationForm = () => {
 
   const handlerSubmit = useCallback(() => {
     if (success || error) return;
+    console.log(`token: ${token}`);
     if (token) {
       newVerification(token)
         .then((data) => {
           console.log(data);
+          if (data.success) {
+            console.log(`verification success: ${data.success}`);
+          }
           setSuccess(data.success);
+          if (data.error) {
+            console.log(`verification error: ${data.error}`);
+          }
           setError(data.error);
         })
-        .catch(() => {
+        .catch((error) => {
+          console.log(error);
           setError("Something went wrong");
         });
     } else {

@@ -14,4 +14,5 @@ echo Creating database %PGDATABASE%...
 %PGPATH%\createdb -U %PGUSER% %PGDATABASE%
 
 echo Database reset completed successfully!
-npx prisma migrate dev&&npx prisma db seed&&pnpm generate:locations&&pnpm run dev
+:: npx prisma migrate dev&&npx prisma db seed&&pnpm generate:locations&&pnpm run dev
+npx prisma migrate dev&&pnpm run dev

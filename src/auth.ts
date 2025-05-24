@@ -55,7 +55,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             await prisma.twoFactorConfirmation.delete({
               where: { id: twoFactorConfirmation.id },
             });
-            return false;
+            //return true;
           }
           return true;
         }

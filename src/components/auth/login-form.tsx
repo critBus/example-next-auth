@@ -20,6 +20,7 @@ import FormSuccess from "./form-success";
 import { login } from "@/actions/login";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { error } from "console";
 type TypeSchemaForm = z.infer<typeof LoginSchema>;
 const LoguinForm = () => {
   const searchParams = useSearchParams();
@@ -35,6 +36,7 @@ const LoguinForm = () => {
     defaultValues: {
       email: "",
       password: "",
+      code: "",
     },
   });
   const handlerSubmit = (values: TypeSchemaForm) => {
@@ -54,7 +56,8 @@ const LoguinForm = () => {
           setShowTwoFactor(true);
         }
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error);
         setError("something went wrong");
       });
   };
