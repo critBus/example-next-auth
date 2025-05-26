@@ -8,7 +8,7 @@ import { UserRole } from "@prisma/client";
 import async from "./middleware";
 import { getTwoFactorConfirmationEmailByUserId } from "./data/two-factor-confirmation";
 
-type ExtendedUser = DefaultSession["user"] & {
+export type ExtendedUser = DefaultSession["user"] & {
   role: UserRole;
 };
 

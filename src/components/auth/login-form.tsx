@@ -20,7 +20,7 @@ import FormSuccess from "./form-success";
 import { login } from "@/actions/login";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { error } from "console";
+
 type TypeSchemaForm = z.infer<typeof LoginSchema>;
 const LoguinForm = () => {
   const searchParams = useSearchParams();

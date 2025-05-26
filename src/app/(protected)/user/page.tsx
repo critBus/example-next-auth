@@ -1,15 +1,14 @@
 "use client";
 import SignoutButton from "@/components/auth/signout-button";
-import { useCurrentUser } from "@/hooks/use-current-user";
-
+import { useSession } from "next-auth/react";
 import React from "react";
 
 const Page = () => {
-  const user = useCurrentUser();
+  const session = useSession();
   return (
-    <div>
+    <div className="flex  flex-col">
       <SignoutButton />
-      {user && user.email}
+      {session.data?.user && <div>User: {session.data?.user.email}</div>}
     </div>
   );
 };

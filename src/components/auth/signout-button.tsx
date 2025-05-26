@@ -1,17 +1,12 @@
-import { signOut } from "@/auth";
 import React from "react";
 import { Button } from "../ui/button";
+import { logout } from "@/actions/logout";
 
-const SignoutButton = () => {
+const SignoutButton = ({ children }: { children?: React.ReactNode }) => {
   return (
-    <form
-      action={async () => {
-        "use server";
-        await signOut();
-      }}
-    >
-      <Button type="submit">Sign out</Button>
-    </form>
+    <Button type="submit" onClick={logout}>
+      {children ? children : "Sign out"}
+    </Button>
   );
 };
 
