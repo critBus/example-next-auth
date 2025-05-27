@@ -3,7 +3,6 @@ import type { NextRequest } from "next/server";
 // import { auth } from "@/auth";
 import authConfig from "./auth.config";
 import NextAuth from "next-auth";
-import { error } from "console";
 
 import {
   AUTH_ROUTES,
@@ -23,7 +22,15 @@ export default async function midddleware(request: NextRequest) {
     // const isLoggedIn = !!request.auth;
     const isLoggedIn = !!session;
     if (isProtected && !session) {
-      return NextResponse.redirect(new URL(LOGIN_URL, request.url));
+      let callbackUrl = request.nextUrl.pathname;
+      if (request.nextUrl.search) {
+        callbackUrl += request.nextUrl.search;
+      }
+      const encodedCallbackUrl = encodeURIComponent(callbackUrl);
+
+      return NextResponse.redirect(
+        new URL(`${LOGIN_URL}?callbackUrl=${encodedCallbackUrl}`, request.url)
+      );
     }
 
     const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));

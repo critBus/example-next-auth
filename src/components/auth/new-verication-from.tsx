@@ -5,7 +5,7 @@ import { BeatLoader } from "react-spinners";
 import { useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { newVerification } from "@/actions/new-verification";
-import { error } from "console";
+
 import FormError from "./form-error";
 import FormSuccess from "./form-success";
 const NewVerificationForm = () => {

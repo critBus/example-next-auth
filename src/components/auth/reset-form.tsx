@@ -1,5 +1,5 @@
 "use client";
-import React, { startTransition, useState } from "react";
+import React, { useState, useTransition } from "react";
 import CardWrapper from "./card-wrapper";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,9 +19,9 @@ import FormError from "./form-error";
 import FormSuccess from "./form-success";
 import { reset } from "@/actions/reset";
 
-import Link from "next/link";
 type TypeSchemaForm = z.infer<typeof ResetSchema>;
 const ResetForm = () => {
+  const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const form = useForm<TypeSchemaForm>({
@@ -33,10 +33,13 @@ const ResetForm = () => {
   const handlerSubmit = (values: TypeSchemaForm) => {
     setError("");
     setSuccess("");
-    reset(values).then((data) => {
-      setError(data.error);
-      setSuccess(data.success);
+    startTransition(() => {
+      reset(values).then((data) => {
+        setError(data.error);
+        setSuccess(data.success);
+      });
     });
+
     // startTransition(() => {
 
     // });
@@ -70,7 +73,7 @@ const ResetForm = () => {
           </div>
           <FormError message={error ?? ""} />
           <FormSuccess message={success ?? ""} />
-          <Button type="submit" className="w-full">
+          <Button disabled={isPending} type="submit" className="w-full">
             Send reset email
           </Button>
         </form>

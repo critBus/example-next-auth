@@ -1,8 +1,7 @@
 "use server";
 
-import { signOut } from "@/auth";
 import { RegisterSchema } from "@/schemas";
-import { error } from "console";
+
 import { prisma } from "@/lib/db";
 import * as z from "zod";
 import bcrypt from "bcryptjs";

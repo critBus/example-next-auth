@@ -3,12 +3,11 @@ import { admin } from "@/actions/admin";
 import RoleGate from "@/components/auth/role-gate";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useCurrentRole } from "@/hooks/use-current-role";
+
 import React from "react";
 import { toast } from "sonner";
 
 const Page = () => {
-  const role = useCurrentRole();
   const onServerActionClick = () => {
     admin().then((data) => {
       if (data.success) {

@@ -1,5 +1,5 @@
 "use client";
-import React, { startTransition, useState } from "react";
+import React, { useState, useTransition } from "react";
 import CardWrapper from "./card-wrapper";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,7 +23,9 @@ import Link from "next/link";
 
 type TypeSchemaForm = z.infer<typeof LoginSchema>;
 const LoguinForm = () => {
+  const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
   const urlError =
     searchParams.get("error") === "OAuthAccountNotLinked"
       ? "Email already in use with different provider!"
@@ -42,24 +44,26 @@ const LoguinForm = () => {
   const handlerSubmit = (values: TypeSchemaForm) => {
     setError("");
     setSuccess("");
-    login(values)
-      .then((data) => {
-        if (data?.error) {
-          form.reset();
-          setError(data.error);
-        }
-        if (data?.success) {
-          form.reset();
-          setSuccess(data.success);
-        }
-        if (data?.twoFactor) {
-          setShowTwoFactor(true);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        setError("something went wrong");
-      });
+    startTransition(() => {
+      login(values, callbackUrl || undefined)
+        .then((data) => {
+          if (data?.error) {
+            form.reset();
+            setError(data.error);
+          }
+          if (data?.success) {
+            form.reset();
+            setSuccess(data.success);
+          }
+          if (data?.twoFactor) {
+            setShowTwoFactor(true);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setError("something went wrong");
+        });
+    });
   };
   return (
     <CardWrapper
@@ -135,7 +139,7 @@ const LoguinForm = () => {
           </div>
           <FormError message={error || urlError} />
           <FormSuccess message={success ?? ""} />
-          <Button type="submit" className="w-full">
+          <Button disabled={isPending} type="submit" className="w-full">
             {showTwoFactor ? "Confirm" : "Login"}
           </Button>
         </form>

@@ -17,7 +17,7 @@ const FirstPage = () => {
         </h1>
         <p className="text-lg text-white f-poppins">A simple</p>
         <div>
-          <LoginButton>
+          <LoginButton mode="modal" asChild>
             <Button variant="secondary" size="lg">
               Loguin
             </Button>

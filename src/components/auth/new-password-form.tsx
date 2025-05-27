@@ -1,5 +1,5 @@
 "use client";
-import React, { startTransition, useState } from "react";
+import React, { useState, useTransition } from "react";
 import CardWrapper from "./card-wrapper";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,12 +19,12 @@ import FormError from "./form-error";
 import FormSuccess from "./form-success";
 import { newPassword } from "@/actions/new-password";
 
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+// import { useSearchParams } from "next/navigation";
 type TypeSchemaForm = z.infer<typeof NewPasswordSchema>;
 const NewPasswordForm = () => {
-  const searchParamas = useSearchParams();
-  const token = searchParamas.get("token");
+  const [isPending, startTransition] = useTransition();
+  // const searchParamas = useSearchParams();
+  // const token = searchParamas.get("token");
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const form = useForm<TypeSchemaForm>({
@@ -36,13 +36,12 @@ const NewPasswordForm = () => {
   const handlerSubmit = (values: TypeSchemaForm) => {
     setError("");
     setSuccess("");
-    newPassword(values).then((data) => {
-      setError(data.error);
-      setSuccess(data.success);
+    startTransition(() => {
+      newPassword(values).then((data) => {
+        setError(data.error);
+        setSuccess(data.success);
+      });
     });
-    // startTransition(() => {
-
-    // });
   };
   return (
     <CardWrapper
@@ -69,7 +68,7 @@ const NewPasswordForm = () => {
           </div>
           <FormError message={error ?? ""} />
           <FormSuccess message={success ?? ""} />
-          <Button type="submit" className="w-full">
+          <Button disabled={isPending} type="submit" className="w-full">
             Reset password
           </Button>
         </form>

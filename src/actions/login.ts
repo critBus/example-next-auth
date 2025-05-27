@@ -10,13 +10,16 @@ import {
   generateVerificationToken,
 } from "@/lib/tokens";
 import { LoginSchema } from "@/schemas";
-import { error } from "console";
+
 import { AuthError } from "next-auth";
 import * as z from "zod";
 import { prisma } from "../lib/db";
 import { getTwoFactorConfirmationEmailByUserId } from "@/data/two-factor-confirmation";
 
-export const login = async (values: z.infer<typeof LoginSchema>) => {
+export const login = async (
+  values: z.infer<typeof LoginSchema>,
+  callbackUrl?: string
+) => {
   const validatedFields = LoginSchema.safeParse(values);
   if (!validatedFields.success) {
     return { error: "Invalid fields" };
@@ -74,11 +77,12 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   }
 
   try {
+    console.log(`callbackUrl ${callbackUrl}`);
     // await signIn("credentials", values);
     await signIn("credentials", {
       email,
       password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
+      redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
     });
   } catch (error) {
     // console.log(error);

@@ -1,6 +1,13 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import LoguinForm from "./login-form";
 
 interface LoginButtonProps {
   children: React.ReactNode;
@@ -18,7 +25,15 @@ const LoginButton = ({
     console.log("click me !!!");
   };
   if (mode == "modal") {
-    return <span>"sin implementar"</span>;
+    return (
+      <Dialog>
+        <DialogTitle></DialogTitle>
+        <DialogTrigger asChild={asChild}>{children}</DialogTrigger>
+        <DialogContent className="p-0 w-auto bg-transparent border-none">
+          <LoguinForm />
+        </DialogContent>
+      </Dialog>
+    );
   }
   return (
     <span className="cursor-pointer" onClick={handlerClick}>
