@@ -7,9 +7,12 @@ import { JWT } from "next-auth/jwt";
 import { UserRole } from "@prisma/client";
 import async from "./middleware";
 import { getTwoFactorConfirmationEmailByUserId } from "./data/two-factor-confirmation";
+import { getAccountByUserId } from "./data/account";
 
 export type ExtendedUser = DefaultSession["user"] & {
   role: UserRole;
+  isTwoFactorEnabled: boolean;
+  isOAuth: boolean;
 };
 
 declare module "next-auth" {
@@ -21,6 +24,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     role?: UserRole;
+    isOAuth: boolean;
   }
 }
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -63,9 +67,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return false;
     },
-    async redirect({ url, baseUrl }) {
-      return baseUrl;
-    },
+    // async redirect({ url, baseUrl }) {
+    //   // Permite redirección solo si la url es del mismo origen
+    //   if (url.startsWith(baseUrl)) {
+    //     return url;
+    //   }
+    //   // Permite rutas relativas
+    //   if (url.startsWith("/")) {
+    //     return `${baseUrl}${url}`;
+    //   }
+    //   // Fallback
+    //   return baseUrl;
+    // },
     async session({ session, user, token }) {
       if (session.user) {
         if (token.sub) {
@@ -74,6 +87,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (token.role) {
           session.user.role = token.role;
         }
+        session.user.isTwoFactorEnabled = !!token.isTwoFactorEnabled;
+        session.user.name = token.name;
+        if (token.email) {
+          session.user.email = token.email;
+        }
+        session.user.isOAuth = token.isOAuth;
       }
 
       return session;
@@ -90,7 +109,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token.sub) {
         const existingUser = await getUserById(token.sub);
         if (existingUser) {
+          const existingAccount = await getAccountByUserId(existingUser.id);
+          token.isOAuth = !!existingAccount;
           token.role = existingUser.role;
+          token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
+          token.name = existingUser.name;
+          token.email = existingUser.email;
         }
       }
       return token;
