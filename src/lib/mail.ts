@@ -1,8 +1,18 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS,
+  },
+});
 
-const resend = new Resend(process.env.AUTH_RESEND_KEY);
-const SENT_EMAIL = false;
-const sendEmail = async ({
+const SENT_EMAIL = true;
+
+const sendEmailFree = async ({
   to,
   subject,
   html,
@@ -17,13 +27,33 @@ const sendEmail = async ({
     html,
   });
   if (SENT_EMAIL) {
-    return await resend.emails.send({
-      from: "onboarding@resend.dev",
-      to: to,
-      subject: subject,
-      html: html,
+    return await transporter.sendMail({
+      from: `"Example Team" <${process.env.GMAIL_USER}>`, // sender address
+      to: to, // list of receivers
+      subject: subject, // Subject line
+      html: html, // html body
     });
   }
+};
+const sendEmail = async ({
+  to,
+  subject,
+  html,
+}: {
+  to: string;
+  subject: string;
+  html: string;
+}) => {
+  console.log({
+    to,
+    subject,
+    html,
+  });
+  return await sendEmailFree({
+    to,
+    subject,
+    html,
+  });
 };
 
 export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
