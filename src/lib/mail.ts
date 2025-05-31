@@ -10,8 +10,10 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const SENT_EMAIL = true;
-
+const SENT_EMAIL = process.env.SENT_EMAIL == "true";
+// console.log(
+//   `send email ${SENT_EMAIL} ${typeof SENT_EMAIL} !!!!!!!!!!!!!!!!!!!!!!!`
+// );
 const sendEmailFree = async ({
   to,
   subject,
