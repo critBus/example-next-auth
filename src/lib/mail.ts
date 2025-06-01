@@ -67,7 +67,7 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
 };
 
 export const sendPasswordResetEmail = async (email: string, token: string) => {
-  const confirmLink = `http://localhost:3000/auth/new-password?token=${token}`;
+  const confirmLink = `${process.env.DOMAIN_URL}/auth/new-password?token=${token}`;
   return await sendEmail({
     to: email,
     subject: "Reset your password",
@@ -76,7 +76,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
 };
 
 export const sendVerificationEmail = async (email: string, token: string) => {
-  const confirmLink = `http://localhost:3000/auth/new-verification?token=${token}`;
+  const confirmLink = `${process.env.DOMAIN_URL}/auth/new-verification?token=${token}`;
   return await sendEmail({
     to: email,
     subject: "Confirm your email",
